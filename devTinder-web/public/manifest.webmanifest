@@ -1,0 +1,10 @@
+{
+  "name": "DevTinder",
+  "short_name": "DevTinder",
+  "description": "Swipe. Match. Build together.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#5e6ad2",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
