@@ -6,69 +6,77 @@ import Avatar from "./ui/Avatar";
 const SWIPE_THRESHOLD = 72;
 const FLY_OUT = 640;
 
-function SwipeCard({ user, passOpacity, connectOpacity, onViewDetails }) {
+function SwipeCard({ user, passOpacity, connectOpacity, onViewDetails, compact = false }) {
   const PassOverlay = typeof passOpacity === "number" ? "div" : motion.div;
   const ConnectOverlay = typeof connectOpacity === "number" ? "div" : motion.div;
   const passStyle = typeof passOpacity === "number" ? { opacity: passOpacity } : { opacity: passOpacity };
   const connectStyle = typeof connectOpacity === "number" ? { opacity: connectOpacity } : { opacity: connectOpacity };
 
   return (
-    <div className="absolute inset-0 bg-surface-elevated rounded-[28px] overflow-hidden touch-none select-none border border-border shadow-[0_20px_60px_-12px_rgba(0,0,0,0.18)]">
+    <div className={`absolute inset-0 bg-surface-elevated rounded-[28px] overflow-hidden touch-none select-none border border-border shadow-[0_20px_60px_-12px_rgba(0,0,0,0.18)] ${compact ? "pointer-events-none" : ""}`}>
       <div className="h-[58%] relative bg-linear-to-br from-brand-50/80 via-surface-elevated to-violet-50/50 dark:from-brand-900/30 dark:via-surface-elevated dark:to-violet-900/20">
         <img
           src={user.photoUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${user._id}`}
           alt={`${user.firstName} ${user.lastName}`}
           className="size-full object-cover pointer-events-none"
           draggable={false}
+          loading="eager"
+          decoding="async"
         />
         {user.compatibility > 0 && (
-          <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-surface-elevated/90 text-[11px] font-bold text-brand-600 shadow-sm">
+          <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-surface-elevated/90 text-[11px] font-bold text-brand-600 dark:text-brand-300 shadow-sm">
             {user.compatibility}% match
           </span>
         )}
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onViewDetails?.(user); }}
-          className="absolute bottom-4 right-4 size-9 rounded-full bg-surface-elevated/90 shadow-md text-sm hover:scale-105 transition-transform z-20"
-          aria-label="View profile"
-        >
-          ℹ️
-        </button>
+        {!compact && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onViewDetails?.(user); }}
+            className="absolute bottom-4 right-4 size-9 rounded-full bg-surface-elevated/90 shadow-md text-sm hover:scale-105 transition-transform z-20"
+            aria-label="View profile"
+          >
+            ℹ️
+          </button>
+        )}
         <div className="absolute inset-0 bg-linear-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
-        <PassOverlay
-          className="absolute top-5 left-5 px-4 py-1.5 rounded-full border-2 border-red-500 text-red-500 font-bold text-[13px] tracking-wide uppercase backdrop-blur-sm bg-surface-elevated/90 pointer-events-none"
-          style={passStyle}
-        >
-          Pass
-        </PassOverlay>
-        <ConnectOverlay
-          className="absolute top-5 right-5 px-4 py-1.5 rounded-full border-2 border-emerald-500 text-emerald-600 font-bold text-[13px] tracking-wide uppercase backdrop-blur-sm bg-surface-elevated/90 pointer-events-none"
-          style={connectStyle}
-        >
-          Connect
-        </ConnectOverlay>
+        {!compact && (
+          <>
+            <PassOverlay
+              className="absolute top-5 left-5 px-4 py-1.5 rounded-full border-2 border-red-500 text-red-500 font-bold text-[13px] tracking-wide uppercase backdrop-blur-sm bg-surface-elevated/90 pointer-events-none"
+              style={passStyle}
+            >
+              Pass
+            </PassOverlay>
+            <ConnectOverlay
+              className="absolute top-5 right-5 px-4 py-1.5 rounded-full border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-bold text-[13px] tracking-wide uppercase backdrop-blur-sm bg-surface-elevated/90 pointer-events-none"
+              style={connectStyle}
+            >
+              Connect
+            </ConnectOverlay>
+          </>
+        )}
       </div>
 
-      <div className="p-6 lg:p-7">
+      <div className={compact ? "p-4" : "p-6 lg:p-7"}>
         <div className="flex items-center gap-3 mb-3">
-          <Avatar src={user.photoUrl} alt={user.firstName} size="md" />
+          <Avatar src={user.photoUrl} alt={user.firstName} size={compact ? "sm" : "md"} />
           <div>
-            <h2 className="text-xl font-bold tracking-tight">
+            <h2 className={`font-bold tracking-tight ${compact ? "text-base" : "text-xl"}`}>
               {(user.firstName || "") + " " + (user.lastName || "")}
             </h2>
-            {(user.age || user.gender || user.city) && (
+            {!compact && (user.age || user.gender || user.city) && (
               <p className="text-[13px] text-text-muted mt-0.5">
                 {[user.age, user.gender, user.city].filter(Boolean).join(" · ")}
               </p>
             )}
           </div>
         </div>
-        {user.about && (
+        {!compact && user.about && (
           <p className="text-[14px] text-text-secondary leading-relaxed line-clamp-3 mb-4">{user.about}</p>
         )}
-        {Array.isArray(user.skills) && user.skills.length > 0 && (
+        {!compact && Array.isArray(user.skills) && user.skills.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {user.skills.map((skill) => (
+            {user.skills.slice(0, 6).map((skill) => (
               <Badge key={skill} variant="neutral">{skill}</Badge>
             ))}
           </div>
@@ -79,9 +87,10 @@ function SwipeCard({ user, passOpacity, connectOpacity, onViewDetails }) {
 }
 
 const SwipeDeck = forwardRef(function SwipeDeck(
-  { user, nextUser, onSwipeLeft, onSwipeRight, onSuper, onViewDetails, disabled, onBusyChange },
+  { user, upNext = [], onSwipeLeft, onSwipeRight, onSuper, onViewDetails, disabled, onBusyChange },
   ref,
 ) {
+  const nextUser = upNext[0];
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-220, 0, 220], [-14, 0, 14]);
   const passOpacity = useTransform(x, [-130, -50, 0], [1, 0.4, 0]);
@@ -141,9 +150,23 @@ const SwipeDeck = forwardRef(function SwipeDeck(
 
   return (
     <div className="relative w-full max-w-[340px] mx-auto h-[540px]">
+      {upNext.slice(1).reverse().map((stackUser, index) => (
+        <div
+          key={stackUser._id}
+          className="absolute inset-0"
+          style={{
+            zIndex: index,
+            transform: `scale(${0.9 - index * 0.03}) translateY(${(index + 1) * 8}px)`,
+            opacity: 0.45 - index * 0.1,
+          }}
+        >
+          <SwipeCard user={stackUser} passOpacity={0} connectOpacity={0} compact />
+        </div>
+      ))}
+
       {nextUser && (
-        <motion.div className="absolute inset-0 z-0" style={{ scale: nextScale, opacity: nextOpacity }}>
-          <SwipeCard user={nextUser} passOpacity={0} connectOpacity={0} onViewDetails={onViewDetails} />
+        <motion.div className="absolute inset-0 z-[5]" style={{ scale: nextScale, opacity: nextOpacity }}>
+          <SwipeCard user={nextUser} passOpacity={0} connectOpacity={0} onViewDetails={onViewDetails} compact />
         </motion.div>
       )}
 
@@ -205,7 +228,7 @@ export function SwipeActions({ onPass, onConnect, onSuper, onUndo, canUndo, disa
             disabled={disabled || loading}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.92 }}
-            className="size-[52px] rounded-full border border-amber-200 bg-amber-50 dark:bg-amber-900/30 shadow-md flex items-center justify-center text-lg disabled:opacity-40"
+            className="size-[52px] rounded-full border border-amber-200 dark:border-amber-700/50 bg-amber-50 dark:bg-amber-900/30 shadow-md flex items-center justify-center text-lg disabled:opacity-40"
             aria-label="Super Connect"
           >
             ⭐
@@ -224,9 +247,16 @@ export function SwipeActions({ onPass, onConnect, onSuper, onUndo, canUndo, disa
         </motion.button>
       </div>
       {canUndo && onUndo && (
-        <button type="button" onClick={onUndo} className="text-xs font-medium text-brand-600 hover:underline">
-          Undo last swipe
-        </button>
+        <motion.button
+          type="button"
+          onClick={onUndo}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-200 dark:border-brand-400/40 bg-brand-50/80 dark:bg-brand-50/15 text-brand-700 dark:text-brand-300 text-sm font-medium shadow-sm hover:bg-brand-50 transition-colors"
+        >
+          <span aria-hidden="true">↩</span>
+          Undo last swipe (1 chance)
+        </motion.button>
       )}
     </div>
   );

@@ -2,6 +2,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AppNavbar from "./AppNavbar";
 import Skeleton from "../ui/Skeleton";
+import useFeedPrefetch from "../../hooks/useFeedPrefetch";
 
 export function needsOnboarding(user) {
   return user && user.onboardingComplete !== true;
@@ -12,6 +13,9 @@ export default function AppShell() {
   const { isLoading } = useSelector((store) => store.user);
   const location = useLocation();
   const isOnboarding = location.pathname === "/app/onboarding";
+  const canPrefetchFeed = Boolean(user) && !needsOnboarding(user) && !isOnboarding;
+
+  useFeedPrefetch(user, canPrefetchFeed);
 
   if (isLoading) {
     return (
