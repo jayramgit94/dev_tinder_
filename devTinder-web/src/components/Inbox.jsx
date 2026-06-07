@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import api from "../lib/api";
-import { getSocket } from "../lib/socket";
 import Alert from "./ui/Alert";
 import Avatar from "./ui/Avatar";
 import Badge from "./ui/Badge";
@@ -10,6 +9,8 @@ import Button from "./ui/Button";
 import Input from "./ui/Input";
 import { cn } from "../lib/utils";
 import { useSocketContext } from "../context/SocketProvider";
+
+const MESSAGE_POLL_MS = 3000;
 
 const formatMessageTime = (value) => {
   if (!value) return "";
@@ -28,7 +29,6 @@ const Inbox = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [typingFrom, setTypingFrom] = useState(null);
 
   const loadConversations = useCallback(async () => {
     try {
@@ -65,71 +65,17 @@ const Inbox = () => {
 
   useEffect(() => {
     loadConversations();
-  }, []);
+    const interval = setInterval(loadConversations, MESSAGE_POLL_MS);
+    return () => clearInterval(interval);
+  }, [loadConversations]);
 
   useEffect(() => {
     if (!selectedUser?._id) return undefined;
 
     loadMessages(selectedUser._id);
-
-    const socket = getSocket();
-    if (!socket) return undefined;
-
-    socket.emit("join_chat", { targetUserId: selectedUser._id });
-
-    const onNewMessage = (message) => {
-      const fromId = message.fromUserId?._id?.toString?.() || String(message.fromUserId?._id || "");
-      const toId = message.toUserId?._id?.toString?.() || String(message.toUserId?._id || "");
-      const partnerId = selectedUser._id.toString();
-      const isRelevant =
-        (fromId === partnerId && toId === currentUser._id.toString()) ||
-        (fromId === currentUser._id.toString() && toId === partnerId);
-
-      if (isRelevant) {
-        setMessages((prev) => {
-          if (prev.some((m) => m._id === message._id)) return prev;
-          return [...prev, message];
-        });
-        loadConversations();
-      }
-    };
-
-    const onTyping = ({ fromUserId, isTyping }) => {
-      if (fromUserId === selectedUser._id.toString()) {
-        setTypingFrom(isTyping ? fromUserId : null);
-      }
-    };
-
-    socket.on("new_message", onNewMessage);
-    socket.on("typing", onTyping);
-
-    return () => {
-      socket.emit("leave_chat", { targetUserId: selectedUser._id });
-      socket.off("new_message", onNewMessage);
-      socket.off("typing", onTyping);
-    };
-  }, [selectedUser?._id, currentUser?._id, loadMessages, loadConversations]);
-
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return undefined;
-
-    const onConversationUpdated = () => loadConversations();
-    socket.on("conversation_updated", onConversationUpdated);
-    return () => socket.off("conversation_updated", onConversationUpdated);
-  }, [loadConversations]);
-
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket || !selectedUser?._id || !draft.trim()) return undefined;
-
-    socket.emit("typing", { targetUserId: selectedUser._id, isTyping: true });
-    const timer = setTimeout(() => {
-      socket.emit("typing", { targetUserId: selectedUser._id, isTyping: false });
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [draft, selectedUser?._id]);
+    const interval = setInterval(() => loadMessages(selectedUser._id), MESSAGE_POLL_MS);
+    return () => clearInterval(interval);
+  }, [selectedUser?._id, loadMessages]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -161,7 +107,7 @@ const Inbox = () => {
           <p className="label-caps mb-2">Messages</p>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Inbox</h1>
           <p className="text-[14px] text-text-secondary mt-1">
-            Real-time chat{unreadTotal > 0 && ` · ${unreadTotal} unread`}
+            Chat with matches{unreadTotal > 0 && ` · ${unreadTotal} unread`}
           </p>
         </div>
         {mobilePanel === "chat" && (
@@ -260,7 +206,7 @@ const Inbox = () => {
               <div className="size-16 rounded-2xl bg-linear-to-br from-brand-50 to-brand-100 flex items-center justify-center text-3xl mb-5">✉️</div>
               <p className="font-semibold text-text-primary tracking-tight">Select a conversation</p>
               <p className="text-sm text-text-muted mt-1.5 max-w-xs leading-relaxed">
-                Choose a match from the list to start chatting in real time.
+                Choose a match from the list to start chatting.
               </p>
             </div>
           ) : (
@@ -271,20 +217,7 @@ const Inbox = () => {
                   <p className="font-semibold text-text-primary tracking-tight text-sm">
                     {(selectedUser.firstName || "") + " " + (selectedUser.lastName || "")}
                   </p>
-                  <p className="text-xs text-text-muted flex items-center gap-1.5">
-                    {typingFrom ? (
-                      <>
-                        <motion.span
-                          animate={{ opacity: [0.4, 1, 0.4] }}
-                          transition={{ repeat: Infinity, duration: 1.2 }}
-                          className="size-1.5 rounded-full bg-brand-500"
-                        />
-                        typing...
-                      </>
-                    ) : (
-                      "Live · messages appear instantly"
-                    )}
-                  </p>
+                  <p className="text-xs text-text-muted">Messages refresh every few seconds</p>
                 </div>
               </div>
 

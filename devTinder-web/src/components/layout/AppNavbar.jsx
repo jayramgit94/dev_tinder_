@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../lib/api";
 import { removeUser } from "../../../utils/userSlice";
-import { disconnectSocket } from "../../lib/socket";
 import { useSocketContext } from "../../context/SocketProvider";
 import NotificationBell from "../NotificationBell";
 import Avatar from "../ui/Avatar";
@@ -28,7 +27,6 @@ export default function AppNavbar() {
 
   const handleLogout = async () => {
     try { await api.post("logout"); } catch { /* proceed */ }
-    disconnectSocket();
     dispatch(removeUser());
     navigate("/login", { replace: true });
   };

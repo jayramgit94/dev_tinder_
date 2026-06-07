@@ -1,6 +1,5 @@
 const Notification = require("../models/notification");
 const User = require("../models/user");
-const { getIO } = require("../socket/ioInstance");
 
 const populateFromUser = async (notification) => {
   const doc = notification.toObject ? notification.toObject() : notification;
@@ -21,14 +20,7 @@ const createNotification = async ({ userId, type, title, body, fromUserId, link 
     link: link || null,
   });
 
-  const populated = await populateFromUser(notification);
-  const io = getIO();
-
-  if (io) {
-    io.to(`user:${userId.toString()}`).emit("notification", populated);
-  }
-
-  return populated;
+  return populateFromUser(notification);
 };
 
 module.exports = { createNotification, populateFromUser };

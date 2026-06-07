@@ -92,13 +92,15 @@ const loginHandler = async (req, res) => {
       return res.status(401).send("invalid credentials");
     } else {
       // create a jwt token and send to the client
-      const token = await user.getJWT(); // generate the jwt token using the instance method of the user model
+      const token = await user.getJWT();
 
-      // Set cookie before sending response.
+      const isProduction = process.env.NODE_ENV === "production";
+      const sameSite = process.env.VERCEL ? "lax" : isProduction ? "none" : "lax";
+
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: isProduction,
+        sameSite,
         expires: new Date(Date.now() + 10 * 60 * 60 * 1000),
       });
 
@@ -117,11 +119,14 @@ const loginHandler = async (req, res) => {
 authRouter.post(["/login", "/user/login", "/Login"], loginHandler);
 
 authRouter.post("/logout",async(req,res)=>{
+  const isProduction = process.env.NODE_ENV === "production";
+  const sameSite = process.env.VERCEL ? "lax" : isProduction ? "none" : "lax";
+
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: isProduction,
+    sameSite,
   });
   return res.status(200).send("logout successful");
 });

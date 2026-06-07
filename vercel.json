@@ -1,0 +1,14 @@
+{
+  "installCommand": "npm install && npm install --prefix tinder_backend && npm install --prefix devTinder-web",
+  "buildCommand": "npm run build --prefix devTinder-web",
+  "outputDirectory": "devTinder-web/dist",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "tinder_backend/**"
+    }
+  }
+}

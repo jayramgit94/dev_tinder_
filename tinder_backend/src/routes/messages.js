@@ -4,7 +4,6 @@ const User = require("../models/user");
 const ConnectionRequest = require("../models/connectionRequest");
 const Message = require("../models/message");
 const { createNotification } = require("../services/notificationService");
-const { getIO } = require("../socket/ioInstance");
 
 const messagesRouter = express.Router();
 
@@ -17,17 +16,6 @@ const canUsersMessageEachOther = async (userAId, userBId) => {
     ],
   });
   return Boolean(acceptedConnection);
-};
-
-const emitNewMessage = (message, fromUserId, toUserId) => {
-  const io = getIO();
-  if (!io) return;
-
-  const room = [fromUserId.toString(), toUserId.toString()].sort().join(":");
-  io.to(`user:${toUserId.toString()}`).emit("new_message", message);
-  io.to(`chat:${room}`).emit("new_message", message);
-  io.to(`user:${toUserId.toString()}`).emit("conversation_updated");
-  io.to(`user:${fromUserId.toString()}`).emit("conversation_updated");
 };
 
 const buildConversationSummary = async (currentUserId, acceptedConnections) => {
@@ -151,8 +139,6 @@ messagesRouter.post("/chat/:targetUserId/messages", userAuth, async (req, res) =
     const populatedMessage = await Message.findById(message._id)
       .populate("fromUserId", "firstName lastName photoUrl")
       .populate("toUserId", "firstName lastName photoUrl");
-
-    emitNewMessage(populatedMessage, currentUserId, targetUserId);
 
     await createNotification({
       userId: targetUserId,
