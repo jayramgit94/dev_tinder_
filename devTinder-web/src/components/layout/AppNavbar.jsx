@@ -69,16 +69,16 @@ export default function AppNavbar() {
 
         <div className="flex items-center gap-1">
           {connected && (
-            <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 uppercase tracking-wider mr-2">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
-              Live
+            <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-text-muted mr-2">
+              <span className="size-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+              Synced
             </span>
           )}
           <ThemeToggle />
           <NotificationBell />
           <button
             type="button"
-            className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-black/[0.04] transition-colors ml-1"
+            className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 interactive-hover transition-colors ml-1"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <Avatar src={user?.photoUrl} alt={user?.firstName} size="sm" online />
@@ -100,7 +100,7 @@ export default function AppNavbar() {
             >
               <Link to="/app/profile/edit" className="block px-4 py-2.5 text-[14px] text-text-primary hover:bg-surface-subtle" onClick={() => setMenuOpen(false)}>Edit profile</Link>
               <Link to="/" className="block px-4 py-2.5 text-[14px] text-text-primary hover:bg-surface-subtle" onClick={() => setMenuOpen(false)}>Home</Link>
-              <button type="button" className="w-full text-left px-4 py-2.5 text-[14px] text-red-600 hover:bg-red-50" onClick={handleLogout}>Log out</button>
+              <button type="button" className="w-full text-left px-4 py-2.5 text-[14px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40" onClick={handleLogout}>Log out</button>
             </motion.div>
           </>
         )}

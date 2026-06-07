@@ -13,7 +13,8 @@ export function SocketProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
   const [inboxUnread, setInboxUnread] = useState(0);
-  const prevUnreadRef = useRef(0);
+  const initializedRef = useRef(false);
+  const lastNotifiedIdRef = useRef(null);
 
   const loadNotifications = useCallback(async () => {
     if (!user?._id) return;
@@ -21,13 +22,20 @@ export function SocketProvider({ children }) {
       const res = await api.get("notifications");
       const next = res.data?.data || [];
       const nextUnread = res.data?.unreadCount || 0;
+      const latest = next[0];
 
-      if (nextUnread > prevUnreadRef.current && next[0]) {
-        const latest = next[0];
+      if (!initializedRef.current) {
+        initializedRef.current = true;
+        if (latest?._id) lastNotifiedIdRef.current = latest._id;
+      } else if (
+        latest?._id &&
+        latest._id !== lastNotifiedIdRef.current &&
+        !latest.readAt
+      ) {
+        lastNotifiedIdRef.current = latest._id;
         toast(latest.title, latest.type === "match" ? "success" : "info");
       }
 
-      prevUnreadRef.current = nextUnread;
       setNotifications(next);
       setUnreadNotifCount(nextUnread);
       setConnected(true);
@@ -55,7 +63,8 @@ export function SocketProvider({ children }) {
       setNotifications([]);
       setUnreadNotifCount(0);
       setInboxUnread(0);
-      prevUnreadRef.current = 0;
+      initializedRef.current = false;
+      lastNotifiedIdRef.current = null;
       return undefined;
     }
 
@@ -76,14 +85,12 @@ export function SocketProvider({ children }) {
       prev.map((n) => (n._id === id ? { ...n, readAt: new Date().toISOString() } : n)),
     );
     setUnreadNotifCount((c) => Math.max(0, c - 1));
-    prevUnreadRef.current = Math.max(0, prevUnreadRef.current - 1);
   };
 
   const markAllNotificationsRead = async () => {
     await api.post("notifications/read-all");
     setNotifications((prev) => prev.map((n) => ({ ...n, readAt: new Date().toISOString() })));
     setUnreadNotifCount(0);
-    prevUnreadRef.current = 0;
   };
 
   return (

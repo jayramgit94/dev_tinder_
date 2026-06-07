@@ -17,7 +17,7 @@ export default function UserRequestCard({ user, actions, variant = "default" }) 
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         {isPending && (
-          <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/90 text-brand-700 shadow-sm backdrop-blur-sm">
+          <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface-elevated/90 text-brand-700 dark:text-brand-300 shadow-sm backdrop-blur-sm border border-border">
             Pending
           </span>
         )}
@@ -57,7 +57,7 @@ export default function UserRequestCard({ user, actions, variant = "default" }) 
 
         {actions && (
           <motion.div
-            className="flex gap-2 justify-end pt-1 border-t border-black/[0.04]"
+            className="flex gap-2 justify-end pt-1 border-t border-border"
             initial={false}
             whileHover={{ y: -1 }}
           >

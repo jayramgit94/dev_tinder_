@@ -94,7 +94,7 @@ export default function Onboarding() {
         className="w-full max-w-lg"
       >
         <Card className="shadow-xl !p-0 overflow-hidden">
-          <div className="px-6 sm:px-8 pt-8 pb-6 border-b border-black/[0.04] bg-linear-to-b from-brand-50/50 to-white">
+          <div className="px-6 sm:px-8 pt-8 pb-6 border-b border-border bg-linear-to-b from-brand-50/50 to-surface-elevated dark:from-brand-50/20 dark:to-surface-elevated">
             <p className="label-caps mb-2">Welcome</p>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
               Set up your developer profile
@@ -111,7 +111,7 @@ export default function Onboarding() {
                     key={i}
                     className={cn(
                       "h-1 flex-1 rounded-full transition-all duration-300",
-                      i <= step ? "bg-brand-600" : "bg-black/[0.06]",
+                      i <= step ? "bg-brand-600 dark:bg-brand-500" : "bg-surface-subtle",
                     )}
                   />
                 ))}
@@ -154,8 +154,8 @@ export default function Onboarding() {
                             className={cn(
                               "px-3.5 py-2 rounded-full text-sm border transition-all duration-200",
                               goals.includes(goal)
-                                ? "bg-brand-50 border-brand-300 text-brand-700 shadow-sm"
-                                : "border-black/[0.08] text-text-secondary hover:border-brand-200 hover:bg-brand-50/30",
+                                ? "bg-brand-50 border-brand-300 text-brand-700 shadow-sm dark:bg-brand-50/25 dark:border-brand-400 dark:text-brand-300"
+                                : "border-border text-text-secondary hover:border-brand-200 hover:bg-brand-50/30 dark:hover:bg-brand-50/15",
                             )}
                           >
                             {goal}
@@ -224,7 +224,7 @@ export default function Onboarding() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="flex gap-3 mt-8 pt-6 border-t border-black/[0.04]">
+            <div className="flex gap-3 mt-8 pt-6 border-t border-border">
               {step > 0 && (
                 <Button variant="secondary" onClick={() => setStep(step - 1)} disabled={loading}>
                   Back

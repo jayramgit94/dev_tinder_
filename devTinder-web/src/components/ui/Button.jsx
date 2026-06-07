@@ -10,7 +10,7 @@ const variants = {
   ghost: "bg-transparent text-text-secondary hover:text-text-primary hover:bg-black/[0.04] dark:hover:bg-white/[0.06]",
   danger: "bg-red-600 text-white hover:bg-red-700 shadow-md",
   outline:
-    "bg-transparent border border-brand-200 text-brand-600 hover:bg-brand-50 hover:border-brand-300",
+    "bg-transparent border border-brand-200 text-brand-600 hover:bg-brand-50 hover:border-brand-300 dark:border-brand-400/40 dark:text-brand-300 dark:hover:bg-brand-50/15",
   glow:
     "bg-brand-600 text-white hover:bg-brand-700 shadow-glow border border-brand-500/20",
 };

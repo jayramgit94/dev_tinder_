@@ -96,7 +96,7 @@ export default function ProfileEdit() {
 
       <Reveal delay={0.05}>
         <Card className="!p-0 overflow-hidden">
-          <div className="px-6 py-8 bg-linear-to-br from-brand-50/80 via-white to-white border-b border-black/[0.04]">
+          <div className="px-6 py-8 bg-linear-to-br from-brand-50/80 via-surface-elevated to-surface-elevated dark:from-brand-50/20 dark:via-surface-elevated dark:to-surface-elevated border-b border-border">
             <div className="flex items-center gap-4">
               <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}>
                 <Avatar src={photoUrl || user?.photoUrl} alt={firstName} size="xl" />

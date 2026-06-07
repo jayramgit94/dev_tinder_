@@ -65,7 +65,7 @@ export default function CommandPalette() {
                 </button>
               ))}
             </div>
-            <p className="px-4 py-2 text-[11px] text-text-muted border-t border-black/[0.04]">⌘K · Esc to close</p>
+            <p className="px-4 py-2 text-[11px] text-text-muted border-t border-border">⌘K · Esc to close</p>
           </motion.div>
         </>
       )}

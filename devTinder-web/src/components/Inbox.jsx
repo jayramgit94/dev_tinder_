@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import api from "../lib/api";
@@ -29,51 +29,60 @@ const Inbox = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const selectedUserIdRef = useRef(selectedUser?._id);
 
-  const loadConversations = useCallback(async () => {
+  selectedUserIdRef.current = selectedUser?._id;
+
+  const loadConversations = useCallback(async (silent = false) => {
     try {
-      setLoadingConversations(true);
+      if (!silent) setLoadingConversations(true);
       const response = await api.get("inbox/conversations");
       const nextConversations = response.data?.data || [];
       setConversations(nextConversations);
 
-      if (selectedUser?._id) {
-        const refreshed = nextConversations.find((c) => c.matchUser?._id === selectedUser._id);
+      const activeId = selectedUserIdRef.current;
+      if (activeId) {
+        const refreshed = nextConversations.find((c) => c.matchUser?._id === activeId);
         if (refreshed?.matchUser) setSelectedUser(refreshed.matchUser);
       }
     } catch (error) {
-      setErrorMessage(error.message || "Failed to load inbox");
+      if (!silent) setErrorMessage(error.message || "Failed to load inbox");
     } finally {
-      setLoadingConversations(false);
+      if (!silent) setLoadingConversations(false);
     }
-  }, [selectedUser?._id]);
+  }, []);
 
-  const loadMessages = useCallback(async (userId) => {
+  const loadMessages = useCallback(async (userId, silent = false) => {
     if (!userId) return;
     try {
-      setLoadingMessages(true);
+      if (!silent) setLoadingMessages(true);
       const response = await api.get(`chat/${userId}/messages`);
       setMessages(response.data?.data || []);
       loadInboxUnread();
     } catch (error) {
-      setErrorMessage(error.message || "Failed to load messages");
-      setMessages([]);
+      if (!silent) {
+        setErrorMessage(error.message || "Failed to load messages");
+        setMessages([]);
+      }
     } finally {
-      setLoadingMessages(false);
+      if (!silent) setLoadingMessages(false);
     }
   }, [loadInboxUnread]);
 
   useEffect(() => {
-    loadConversations();
-    const interval = setInterval(loadConversations, MESSAGE_POLL_MS);
+    loadConversations(false);
+    const interval = setInterval(() => loadConversations(true), MESSAGE_POLL_MS);
     return () => clearInterval(interval);
   }, [loadConversations]);
 
   useEffect(() => {
     if (!selectedUser?._id) return undefined;
 
-    loadMessages(selectedUser._id);
-    const interval = setInterval(() => loadMessages(selectedUser._id), MESSAGE_POLL_MS);
+    loadMessages(selectedUser._id, false);
+    const interval = setInterval(
+      () => loadMessages(selectedUser._id, true),
+      MESSAGE_POLL_MS,
+    );
     return () => clearInterval(interval);
   }, [selectedUser?._id, loadMessages]);
 
@@ -90,7 +99,7 @@ const Inbox = () => {
         setMessages((prev) => (prev.some((m) => m._id === message._id) ? prev : [...prev, message]));
       }
       setDraft("");
-      loadConversations();
+      loadConversations(true);
     } catch (error) {
       setErrorMessage(error.message || "Failed to send message");
     } finally {
@@ -130,7 +139,7 @@ const Inbox = () => {
             mobilePanel === "chat" ? "hidden lg:flex" : "flex",
           )}
         >
-          <div className="px-5 py-4 border-b border-black/[0.06] bg-surface-muted/60 flex items-center justify-between">
+          <div className="px-5 py-4 panel-header flex items-center justify-between">
             <span className="font-semibold text-sm tracking-tight">Conversations</span>
             {unreadTotal > 0 && <Badge>{unreadTotal}</Badge>}
           </div>
@@ -166,10 +175,10 @@ const Inbox = () => {
                   key={conversation.connectionId}
                   type="button"
                   className={cn(
-                    "w-full text-left px-4 py-3.5 flex items-center gap-3 transition-all duration-200 border-b border-black/[0.03] last:border-0",
+                    "w-full text-left px-4 py-3.5 flex items-center gap-3 transition-all duration-200 border-b border-border last:border-0",
                     isActive
-                      ? "bg-brand-50/80 border-l-2 border-l-brand-600"
-                      : "hover:bg-black/[0.02] border-l-2 border-l-transparent",
+                      ? "unread-row border-l-2 border-l-brand-600 dark:border-l-brand-400"
+                      : "row-hover border-l-2 border-l-transparent",
                   )}
                   onClick={() => {
                     setSelectedUser(matchUser);
@@ -180,7 +189,7 @@ const Inbox = () => {
                   <Avatar src={matchUser?.photoUrl} alt={matchUser?.firstName} size="md" online />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className={cn("font-medium truncate text-sm", isActive ? "text-brand-700" : "text-text-primary")}>
+                      <span className={cn("font-medium truncate text-sm", isActive ? "text-brand-700 dark:text-brand-300" : "text-text-primary")}>
                         {(matchUser?.firstName || "") + " " + (matchUser?.lastName || "")}
                       </span>
                       {conversation.unreadCount > 0 && <Badge>{conversation.unreadCount}</Badge>}
@@ -203,7 +212,7 @@ const Inbox = () => {
         >
           {!selectedUser?._id ? (
             <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
-              <div className="size-16 rounded-2xl bg-linear-to-br from-brand-50 to-brand-100 flex items-center justify-center text-3xl mb-5">✉️</div>
+              <div className="size-16 rounded-2xl bg-linear-to-br from-brand-50 to-brand-100 dark:from-brand-50/40 dark:to-brand-100/20 flex items-center justify-center text-3xl mb-5">✉️</div>
               <p className="font-semibold text-text-primary tracking-tight">Select a conversation</p>
               <p className="text-sm text-text-muted mt-1.5 max-w-xs leading-relaxed">
                 Choose a match from the list to start chatting.
@@ -211,7 +220,7 @@ const Inbox = () => {
             </div>
           ) : (
             <>
-              <div className="px-5 py-4 border-b border-black/[0.06] bg-surface-muted/60 flex items-center gap-3">
+              <div className="px-5 py-4 panel-header flex items-center gap-3">
                 <Avatar src={selectedUser.photoUrl} alt={selectedUser.firstName} size="md" online />
                 <div>
                   <p className="font-semibold text-text-primary tracking-tight text-sm">
@@ -222,7 +231,7 @@ const Inbox = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4 bg-surface-muted/30">
-                {loadingMessages && (
+                {loadingMessages && messages.length === 0 && (
                   <p className="text-text-muted text-sm text-center py-10">Loading messages...</p>
                 )}
                 {!loadingMessages && messages.length === 0 && (
@@ -249,12 +258,12 @@ const Inbox = () => {
                           className={cn(
                             "max-w-[75%] px-4 py-2.5 rounded-2xl text-sm shadow-sm",
                             isMine
-                              ? "bg-brand-600 text-white rounded-br-md"
+                              ? "bg-brand-600 text-white rounded-br-md dark:bg-brand-500"
                               : "bg-surface-elevated border border-border text-text-primary rounded-bl-md",
                           )}
                         >
                           <p className="whitespace-pre-wrap leading-relaxed">{message.messageText}</p>
-                          <p className={cn("text-[11px] mt-1", isMine ? "text-brand-100" : "text-text-muted")}>
+                          <p className={cn("text-[11px] mt-1", isMine ? "text-brand-100 dark:text-brand-50/80" : "text-text-muted")}>
                             {formatMessageTime(message.createdAt)}
                             {isMine && (message.readAt ? " · Read" : " · Sent")}
                           </p>

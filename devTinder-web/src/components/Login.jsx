@@ -36,7 +36,7 @@ export default function Login() {
 
   return (
     <motion.div {...fadeUp(0)} className="w-full max-w-[420px]">
-      <Card className="!p-8 lg:!p-10 shadow-xl border-black/[0.08]">
+      <Card className="!p-8 lg:!p-10 shadow-xl border-border">
         <div className="mb-8">
           <h2 className="text-2xl font-bold tracking-tight">Welcome back</h2>
           <p className="text-[15px] text-text-secondary mt-2">Sign in to continue networking</p>

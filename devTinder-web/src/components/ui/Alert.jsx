@@ -2,10 +2,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
 
 const variants = {
-  error: "bg-red-50/80 border-red-200/60 text-red-800",
-  success: "bg-emerald-50/80 border-emerald-200/60 text-emerald-800",
-  info: "bg-brand-50/80 border-brand-200/60 text-brand-800",
-  warning: "bg-amber-50/80 border-amber-200/60 text-amber-800",
+  error: "bg-red-50/80 border-red-200/60 text-red-800 dark:bg-red-950/50 dark:border-red-800/50 dark:text-red-200",
+  success: "bg-emerald-50/80 border-emerald-200/60 text-emerald-800 dark:bg-emerald-950/50 dark:border-emerald-800/50 dark:text-emerald-200",
+  info: "bg-brand-50/80 border-brand-200/60 text-brand-800 dark:bg-brand-50/20 dark:border-brand-200/30 dark:text-brand-200",
+  warning: "bg-amber-50/80 border-amber-200/60 text-amber-800 dark:bg-amber-950/50 dark:border-amber-800/50 dark:text-amber-200",
 };
 
 export default function Alert({ children, variant = "info", className, onDismiss }) {
@@ -40,23 +40,25 @@ export function ToastStack({ toasts, onDismiss }) {
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 max-w-sm pointer-events-none">
       <AnimatePresence>
         {toasts.map((t) => (
-          <motion.div
+          <motion.button
             key={t.id}
+            type="button"
             initial={{ opacity: 0, y: 16, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, x: 40, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            onClick={() => onDismiss?.(t.id)}
             className={cn(
-              "pointer-events-auto px-4 py-3.5 rounded-2xl shadow-lg border text-[14px] font-medium backdrop-blur-xl",
+              "pointer-events-auto px-4 py-3.5 rounded-2xl shadow-lg border text-[14px] font-medium backdrop-blur-xl text-left",
               t.variant === "success"
-                ? "bg-emerald-950/90 text-white border-emerald-800/50"
+                ? "bg-emerald-950/90 text-white border-emerald-800/50 dark:bg-emerald-900/95"
                 : t.variant === "error"
-                  ? "bg-red-950/90 text-white border-red-800/50"
-                  : "bg-neutral-900/90 text-white border-neutral-700/50",
+                  ? "bg-red-950/90 text-white border-red-800/50 dark:bg-red-900/95"
+                  : "bg-neutral-900/90 text-white border-neutral-700/50 dark:bg-neutral-800/95",
             )}
           >
             {t.message}
-          </motion.div>
+          </motion.button>
         ))}
       </AnimatePresence>
     </div>

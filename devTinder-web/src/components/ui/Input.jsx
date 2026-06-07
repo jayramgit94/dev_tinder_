@@ -23,7 +23,7 @@ export default function Input({
           "w-full h-11 px-4 rounded-xl bg-surface-elevated text-text-primary text-[15px] placeholder:text-text-muted",
           "border transition-all duration-200",
           "focus:outline-none focus:ring-2 focus:ring-brand-500/15 focus:border-brand-400",
-          error ? "border-red-300" : "border-border hover:border-border-strong",
+          error ? "border-red-300 dark:border-red-700" : "border-border hover:border-border-strong",
           className,
         )}
         aria-invalid={error ? "true" : undefined}

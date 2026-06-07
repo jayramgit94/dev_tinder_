@@ -16,7 +16,7 @@ export default function AppShell() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col mesh-bg">
-        <div className="h-16 glass-nav border-b border-black/[0.04] px-6 flex items-center justify-between">
+        <div className="h-16 glass-nav border-b border-border px-6 flex items-center justify-between">
           <Skeleton className="h-7 w-28 rounded-lg" />
           <div className="flex items-center gap-3">
             <Skeleton className="size-9 rounded-xl" />

@@ -32,7 +32,7 @@ function SectionHeader({ label, title, count }) {
         <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{title}</h2>
       </div>
       {typeof count === "number" && count > 0 && (
-        <span className="text-xs font-medium text-text-muted px-2.5 py-1 rounded-full bg-black/[0.04]">
+        <span className="text-xs font-medium text-text-muted px-2.5 py-1 rounded-full bg-surface-subtle">
           {count}
         </span>
       )}
@@ -367,7 +367,7 @@ const Profile = () => {
             {chatError && <Alert variant="error" className="mb-4">{chatError}</Alert>}
 
             <Card className="overflow-hidden !p-0">
-              <div className="flex items-center gap-3 px-5 py-4 border-b border-black/[0.06] bg-surface-muted/80">
+              <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-surface-muted/80">
                 <Avatar src={activeChatUser.photoUrl} alt={activeChatUser.firstName} size="md" online />
                 <div>
                   <p className="font-semibold tracking-tight">{activeChatUser.firstName} {activeChatUser.lastName}</p>
@@ -375,7 +375,7 @@ const Profile = () => {
                 </div>
                 <button
                   type="button"
-                  className="ml-auto text-text-muted hover:text-text-primary p-1.5 rounded-lg hover:bg-black/[0.04] transition-colors"
+                  className="ml-auto text-text-muted hover:text-text-primary p-1.5 rounded-lg interactive-hover transition-colors"
                   onClick={() => setActiveChatUser(null)}
                   aria-label="Close chat"
                 >

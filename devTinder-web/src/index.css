@@ -176,7 +176,27 @@ html.dark {
   }
 
   .label-caps {
-    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-600;
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-600 dark:text-brand-400;
+  }
+
+  .border-divider {
+    border-color: var(--color-border);
+  }
+
+  .interactive-hover {
+    @apply hover:bg-black/[0.04] dark:hover:bg-white/[0.06];
+  }
+
+  .row-hover {
+    @apply hover:bg-black/[0.02] dark:hover:bg-white/[0.04];
+  }
+
+  .panel-header {
+    @apply border-b border-border bg-surface-muted/60;
+  }
+
+  .unread-row {
+    @apply bg-brand-50/80 dark:bg-brand-50/25;
   }
 
   .animate-shimmer {

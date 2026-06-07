@@ -6,9 +6,9 @@ import Avatar from "./ui/Avatar";
 import { cn } from "../lib/utils";
 
 const typeConfig = {
-  message: { icon: "💬", bg: "bg-blue-50" },
-  match: { icon: "🎉", bg: "bg-emerald-50" },
-  request: { icon: "👋", bg: "bg-violet-50" },
+  message: { icon: "💬", bg: "bg-blue-50 dark:bg-blue-950/40" },
+  match: { icon: "🎉", bg: "bg-emerald-50 dark:bg-emerald-950/40" },
+  request: { icon: "👋", bg: "bg-violet-50 dark:bg-violet-950/40" },
 };
 
 export default function NotificationBell() {
@@ -33,7 +33,7 @@ export default function NotificationBell() {
         type="button"
         className={cn(
           "relative p-2.5 rounded-xl transition-all duration-200",
-          open ? "bg-brand-50 text-brand-700" : "hover:bg-black/[0.04] text-text-secondary",
+          open ? "bg-brand-50 text-brand-700 dark:bg-brand-50/25 dark:text-brand-300" : "interactive-hover text-text-secondary",
         )}
         onClick={() => setOpen(!open)}
         aria-label={`Notifications${unreadNotifCount ? `, ${unreadNotifCount} unread` : ""}`}
@@ -71,7 +71,7 @@ export default function NotificationBell() {
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="absolute right-0 top-full mt-2 z-50 w-80 sm:w-96 rounded-2xl border border-border bg-surface-elevated/95 backdrop-blur-xl shadow-xl overflow-hidden"
             >
-              <div className="flex items-center justify-between px-4 py-3.5 border-b border-black/[0.06] bg-surface-muted/80">
+              <div className="flex items-center justify-between px-4 py-3.5 border-b border-border bg-surface-muted/80">
                 <span className="font-semibold text-sm tracking-tight">Notifications</span>
                 {unreadNotifCount > 0 && (
                   <button
@@ -92,15 +92,15 @@ export default function NotificationBell() {
                   </div>
                 )}
                 {notifications.map((n) => {
-                  const config = typeConfig[n.type] || { icon: "🔔", bg: "bg-neutral-50" };
+                  const config = typeConfig[n.type] || { icon: "🔔", bg: "bg-surface-subtle" };
                   return (
                     <Link
                       key={n._id}
                       to={n.link || "/app"}
                       onClick={() => handleClick(n)}
                       className={cn(
-                        "flex gap-3 px-4 py-3.5 border-b border-black/[0.04] last:border-0 transition-colors hover:bg-black/[0.02]",
-                        !n.readAt && "bg-brand-50/40",
+                        "flex gap-3 px-4 py-3.5 border-b border-border last:border-0 transition-colors row-hover",
+                        !n.readAt && "unread-row",
                       )}
                     >
                       <span className={cn("size-9 rounded-xl flex items-center justify-center text-base shrink-0", config.bg)} aria-hidden="true">
