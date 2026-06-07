@@ -8,7 +8,7 @@ export default function UserRequestCard({ user, actions, variant = "default" }) 
 
   return (
     <Card hover className="overflow-hidden p-0 group">
-      <div className="relative aspect-[4/3] overflow-hidden bg-linear-to-br from-brand-50 via-white to-brand-100/80">
+      <div className="relative aspect-[4/3] overflow-hidden card-gradient">
         <img
           src={user.photoUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=user"}
           alt={`${user.firstName || "User"} ${user.lastName || ""}`}

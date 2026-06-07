@@ -41,7 +41,7 @@ export default function Testimonials() {
                 <blockquote className="flex-1">
                   <p className="text-[15px] text-text-secondary leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
                 </blockquote>
-                <footer className="flex items-center gap-3 mt-8 pt-6 border-t border-black/[0.06]">
+                <footer className="flex items-center gap-3 mt-8 pt-6 border-t border-border">
                   <Avatar src={`https://api.dicebear.com/7.x/notionists/svg?seed=${t.avatar}`} alt={t.name} size="md" />
                   <div>
                     <cite className="not-italic font-semibold text-[14px] text-text-primary">{t.name}</cite>

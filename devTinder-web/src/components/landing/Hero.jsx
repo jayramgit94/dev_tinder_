@@ -59,7 +59,7 @@ export default function Hero() {
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={i}
-                    className="size-9 rounded-full ring-2 ring-white overflow-hidden bg-neutral-200"
+                    className="size-9 rounded-full ring-2 ring-surface-elevated dark:ring-neutral-800 overflow-hidden bg-surface-subtle"
                   >
                     <img
                       src={`https://api.dicebear.com/7.x/notionists/svg?seed=dev${i}`}
@@ -105,9 +105,9 @@ export default function Hero() {
                 initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="w-[300px] premium-card overflow-hidden shadow-xl border-black/[0.08]"
+                className="w-[300px] premium-card overflow-hidden shadow-xl border-border"
               >
-                <div className="relative aspect-[3/4] bg-linear-to-br from-brand-50 via-white to-brand-100/50">
+                <div className="relative aspect-[3/4] card-gradient">
                   <img
                     src="https://api.dicebear.com/7.x/notionists/svg?seed=hero-dev"
                     alt="Developer profile"
@@ -117,7 +117,7 @@ export default function Hero() {
                     <Badge variant="success">96% match</Badge>
                   </div>
                 </div>
-                <div className="p-5 border-t border-black/[0.06]">
+                <div className="p-5 border-t border-border">
                   <h3 className="font-bold text-[17px] tracking-tight">Sarah Chen</h3>
                   <p className="text-[13px] text-text-muted mt-0.5">Full Stack · Open to co-founding</p>
                   <div className="flex flex-wrap gap-1.5 mt-3">
@@ -126,8 +126,8 @@ export default function Hero() {
                     ))}
                   </div>
                   <div className="flex gap-2 mt-5">
-                    <div className="flex-1 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-text-muted text-sm">Pass</div>
-                    <div className="flex-1 h-10 rounded-full bg-text-primary text-white flex items-center justify-center text-sm font-medium">Connect</div>
+                    <div className="flex-1 h-10 rounded-full bg-surface-subtle flex items-center justify-center text-text-muted text-sm">Pass</div>
+                    <div className="flex-1 h-10 rounded-full bg-neutral-950 text-neutral-50 flex items-center justify-center text-sm font-medium">Connect</div>
                   </div>
                 </div>
               </motion.div>

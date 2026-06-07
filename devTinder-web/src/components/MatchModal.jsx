@@ -10,7 +10,7 @@ export default function MatchModal({ isOpen, matchUser, onClose }) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="p-10 text-center">
-      <div className="absolute inset-0 bg-linear-to-br from-brand-50 via-white to-violet-50 -z-10" />
+      <div className="absolute inset-0 card-gradient -z-10 opacity-80" />
       <ModalCloseButton onClose={onClose} />
 
       <motion.div

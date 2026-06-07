@@ -35,7 +35,7 @@ export default function CommunitySection() {
               <Reveal key={stat.label} delay={i * 0.08}>
                 <motion.div
                   whileHover={{ y: -2 }}
-                  className="rounded-2xl border border-black/[0.06] bg-surface-muted p-6 lg:p-8 text-center premium-card-hover"
+                  className="rounded-2xl border border-border bg-surface-muted p-6 lg:p-8 text-center premium-card-hover"
                 >
                   <p className="text-3xl sm:text-4xl font-bold text-text-primary tracking-tight">{stat.value}</p>
                   <p className="text-[13px] text-text-muted mt-2 font-medium">{stat.label}</p>

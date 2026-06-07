@@ -127,7 +127,7 @@ export default function LandingNavbar() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="py-4 text-2xl font-semibold text-text-primary border-b border-black/[0.06]"
+                  className="py-4 text-2xl font-semibold text-text-primary border-b border-border"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}

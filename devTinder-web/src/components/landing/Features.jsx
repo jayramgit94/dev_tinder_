@@ -76,7 +76,7 @@ export default function Features() {
           {features.map((feature) => (
             <RevealItem key={feature.title}>
               <Card hover className="h-full !p-6 lg:!p-7">
-                <div className="size-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-5">
+                <div className="size-11 rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-50/20 dark:text-brand-300 flex items-center justify-center mb-5">
                   {feature.icon}
                 </div>
                 <CardTitle>{feature.title}</CardTitle>

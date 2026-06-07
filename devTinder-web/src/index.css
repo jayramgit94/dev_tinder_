@@ -199,6 +199,35 @@ html.dark {
     @apply bg-brand-50/80 dark:bg-brand-50/25;
   }
 
+  /* Fixed dark promo bands — do not use bg-text-primary (inverts in dark theme) */
+  .promo-band {
+    @apply bg-neutral-950 text-neutral-50;
+  }
+
+  .promo-band-subtext {
+    @apply text-neutral-400;
+  }
+
+  .promo-band-list {
+    @apply text-neutral-300;
+  }
+
+  .promo-band-badge {
+    @apply bg-white/10 text-white border border-white/25;
+  }
+
+  .promo-band-btn {
+    @apply !bg-white !text-neutral-950 hover:!bg-neutral-100 !border-0;
+  }
+
+  .card-gradient {
+    @apply bg-linear-to-br from-brand-50/80 via-surface-elevated to-brand-100/50;
+  }
+
+  html.dark .card-gradient {
+    background-image: linear-gradient(to bottom right, rgb(67 56 168 / 0.35), var(--color-surface-elevated), rgb(76 29 149 / 0.25));
+  }
+
   .animate-shimmer {
     background: linear-gradient(90deg, var(--color-surface-subtle) 0%, var(--color-surface-elevated) 50%, var(--color-surface-subtle) 100%);
     background-size: 200% 100%;

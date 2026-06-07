@@ -23,7 +23,7 @@ export default function LandingFooter() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-16">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-3">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-text-primary text-white font-bold text-xs">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-neutral-950 text-neutral-50 font-bold text-xs">
                 DT
               </span>
               <span className="font-semibold text-[15px]">DevTinder</span>
@@ -49,7 +49,7 @@ export default function LandingFooter() {
           ))}
         </div>
 
-        <div className="mt-16 pt-8 border-t border-black/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[13px] text-text-muted">© {new Date().getFullYear()} DevTinder · MIT License</p>
           <div className="flex items-center gap-4">
             <a href="https://github.com" className="text-text-muted hover:text-text-primary transition-colors" aria-label="GitHub">
